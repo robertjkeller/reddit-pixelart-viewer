@@ -1,6 +1,14 @@
 import tkinter as tk
+from pathlib import Path
 from PIL import Image, ImageTk, ImageSequence
 from constants import GIF_DELAY
+from config import UserConfigs
+
+class ImageCollection:
+    def __init__(self, configs) -> None:
+        self.files = [f for f in Path(configs.folder_path).glob('*.gif')]
+        self.current_index = 0
+        self.file_count = len(self.files)
 
 
 class ImageLabel(tk.Label):
@@ -25,11 +33,24 @@ class ImageLabel(tk.Label):
             self.after(self.delay, self.next_frame)
 
 
-def play(file):
+def play():
+    configs = UserConfigs()
+
+    def next_image():
+        if collection.current_index < (collection.file_count - 1):
+            collection.current_index += 1
+        else:
+            collection.current_index = 0
+        label.load(file = collection.files[collection.current_index])
+    
     root = tk.Tk()
-    root.wm_overrideredirect(True)
+    # Uncomment below for full-screen.
+    # root.wm_overrideredirect(True)
+
+    collection = ImageCollection(configs)
     label = ImageLabel(root)
     label.pack()
-    label.load(file=file)
+    label.bind('<Button-1>', lambda e: next_image())
+    label.load(file=collection.files[collection.current_index])
 
     root.mainloop()
