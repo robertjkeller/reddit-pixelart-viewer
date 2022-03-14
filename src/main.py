@@ -1,5 +1,5 @@
 from image_collection import ImageCollection
-from redditclient import RedditClient
+from reddit_client import RedditClient
 from flask import Flask, redirect, render_template
 
 app = Flask(__name__)
