@@ -16,7 +16,7 @@ class RedditClient:
         self.client_id = configs.client_id
         self.client_secret = configs.client_secret
         self.user_agent = configs.user_agent
-        self.folder_path = 'static/img'
+        self.folder_path = "static/img"
         self.read_only_client = self._get_read_only_client()
         self.image_urls = []
 
@@ -46,7 +46,7 @@ class RedditClient:
             img = Image.open(BytesIO(response.content))
 
             if img.size[0] == img.size[1]:
-                i = len([f for f in Path(self.folder_path).glob('*.gif')])
+                i = len([f for f in Path(self.folder_path).glob("*.gif")])
                 new_sequence = [f.resize(SCREEN_SIZE) for f in ImageSequence.Iterator(img)]
                 outfile = f"{self.folder_path}/{i}.gif"
                 new_sequence[0].save(
@@ -58,6 +58,6 @@ class RedditClient:
         self._save_images()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     client = RedditClient()
     client.run()
