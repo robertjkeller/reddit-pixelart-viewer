@@ -16,7 +16,7 @@ class RedditClient:
         self.client_id = configs.client_id
         self.client_secret = configs.client_secret
         self.user_agent = configs.user_agent
-        self.folder_path = configs.folder_path
+        self.folder_path = "static/img"
         self.read_only_client = self._get_read_only_client()
         self.image_urls = []
 
@@ -32,7 +32,7 @@ class RedditClient:
 
     def _get_image_urls(self):
         urls = [p.url for p in self._get_top_posts_of_week()]
-        self.image_urls = [u for u in urls if ".gif" in u]
+        self.image_urls = [u for u in urls if u[-4:] == ".gif"]
 
     def _prepare_target_folder(self):
         folder = Path(self.folder_path)
@@ -41,13 +41,14 @@ class RedditClient:
     def _save_images(self):
         self._prepare_target_folder()
 
-        for i, url in enumerate(self.image_urls):
+        for url in self.image_urls:
             response = requests.get(url)
             img = Image.open(BytesIO(response.content))
 
             if img.size[0] == img.size[1]:
+                i = len([f for f in Path(self.folder_path).glob("*.gif")])
                 new_sequence = [f.resize(SCREEN_SIZE) for f in ImageSequence.Iterator(img)]
-                outfile = f"{self.folder_path}\\{i}.gif"
+                outfile = f"{self.folder_path}/{i}.gif"
                 new_sequence[0].save(
                     outfile, format="gif", save_all=True, append_images=new_sequence[1:]
                 )
@@ -55,3 +56,8 @@ class RedditClient:
     def run(self):
         self._get_image_urls()
         self._save_images()
+
+
+if __name__ == "__main__":
+    client = RedditClient()
+    client.run()
