@@ -32,7 +32,7 @@ class RedditClient:
 
     def _get_image_urls(self):
         urls = [p.url for p in self._get_top_posts_of_week()]
-        self.image_urls = [u for u in urls if ".gif" in u]
+        self.image_urls = [u for u in urls if u[-4:] == ".gif"]
 
     def _prepare_target_folder(self):
         folder = Path(self.folder_path)
