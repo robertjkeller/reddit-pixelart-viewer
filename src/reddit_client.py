@@ -46,7 +46,7 @@ class RedditClient:
             response = requests.get(url)
             img = Image.open(BytesIO(response.content))
 
-            if img.size[0] == img.size[1]:
+            if abs(img.size[0] - img.size[1]) <= 10:
                 i = len([f for f in Path(self.folder_path).glob("*.gif")])
                 new_sequence = [f.resize(SCREEN_SIZE).rotate(self.rotation) for f in ImageSequence.Iterator(img)]
                 outfile = f"{self.folder_path}/{i}.gif"
