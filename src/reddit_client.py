@@ -53,6 +53,7 @@ class RedditClient:
                 new_sequence[0].save(
                     outfile, format="gif", save_all=True, append_images=new_sequence[1:]
                 )
+            img.close()
 
     def run(self):
         self._get_image_urls()
