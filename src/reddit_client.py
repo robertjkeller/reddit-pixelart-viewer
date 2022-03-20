@@ -1,5 +1,6 @@
 from io import BytesIO
 from pathlib import Path
+import itertools
 
 import praw
 import requests
@@ -44,16 +45,18 @@ class RedditClient:
 
         for url in self.image_urls:
             response = requests.get(url)
-            img = Image.open(BytesIO(response.content))
+            with Image.open(BytesIO(response.content)) as img:
 
-            if abs(img.size[0] - img.size[1]) <= 10:
-                i = len([f for f in Path(self.folder_path).glob("*.gif")])
-                new_sequence = [f.resize(SCREEN_SIZE).rotate(self.rotation) for f in ImageSequence.Iterator(img)]
-                outfile = f"{self.folder_path}/{i}.gif"
-                new_sequence[0].save(
-                    outfile, format="gif", save_all=True, append_images=new_sequence[1:]
-                )
-            img.close()
+                if abs(img.size[0] - img.size[1]) <= 10:
+                    i = len([f for f in Path(self.folder_path).glob("*.gif")])
+
+                    frames = (f.resize(SCREEN_SIZE).rotate(self.rotation) for f in ImageSequence.Iterator(img))
+                    frame1 = next(frames)
+
+                    outfile = f"{self.folder_path}/{i}.gif"
+                    frame1.save(
+                        outfile, format="gif", save_all=True, loop=0, append_images=(frames)
+                    )
 
     def run(self):
         self._get_image_urls()
