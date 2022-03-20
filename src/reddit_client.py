@@ -29,7 +29,7 @@ class RedditClient:
 
     def _get_top_posts_of_week(self, subreddit_name=SUBREDDIT_NAME):
         subreddit = self.read_only_client.subreddit(subreddit_name)
-        return [p for p in subreddit.top(time_filter="week")]
+        return [p for p in subreddit.top(time_filter="year")]
 
     def _get_image_urls(self):
         urls = [p.url for p in self._get_top_posts_of_week()]
