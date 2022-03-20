@@ -10,4 +10,4 @@ class UserConfigs:
         self.client_secret = parser["reddit"]["client_secret"]
         self.user_agent = parser["reddit"]["user_agent"]
 
-        self.rotation = parser["image"]["rotation"]
+        self.rotation = int(parser["image"]["rotation"])
