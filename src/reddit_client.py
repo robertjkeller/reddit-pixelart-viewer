@@ -47,9 +47,8 @@ class RedditClient:
             img = Image.open(BytesIO(response.content))
 
             if img.size[0] == img.size[1]:
-                img = img.rotate(self.rotation)
                 i = len([f for f in Path(self.folder_path).glob("*.gif")])
-                new_sequence = [f.resize(SCREEN_SIZE) for f in ImageSequence.Iterator(img)]
+                new_sequence = [f.resize(SCREEN_SIZE).rotate(self.rotation) for f in ImageSequence.Iterator(img)]
                 outfile = f"{self.folder_path}/{i}.gif"
                 new_sequence[0].save(
                     outfile, format="gif", save_all=True, append_images=new_sequence[1:]
