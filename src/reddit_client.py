@@ -19,6 +19,7 @@ class RedditClient:
         self.folder_path = "static/img"
         self.read_only_client = self._get_read_only_client()
         self.image_urls = []
+        self.rotation = configs.rotation
 
     def _get_read_only_client(self):
         read_only_client = praw.Reddit(
@@ -46,6 +47,7 @@ class RedditClient:
             img = Image.open(BytesIO(response.content))
 
             if img.size[0] == img.size[1]:
+                img = img.rotate(self.rotation)
                 i = len([f for f in Path(self.folder_path).glob("*.gif")])
                 new_sequence = [f.resize(SCREEN_SIZE) for f in ImageSequence.Iterator(img)]
                 outfile = f"{self.folder_path}/{i}.gif"
